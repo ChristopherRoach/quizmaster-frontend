@@ -1,10 +1,8 @@
 // QuizMaster Complete - Production Configuration
-// Replace with your actual URLs after deployment
-
 window.CONFIG = {
-    API_URL: 'https://your-railway-url-here.railway.app/api',
-    SUPABASE_URL: 'https://your-project-id.supabase.co',
-    SUPABASE_ANON_KEY: 'your_anon_key_from_supabase'
+    API_URL: 'https://beaconiq.up.railway.app/api',
+    SUPABASE_URL: 'https://kuofkxkeueylcwvoccwu.supabase.co',  // Replace with your Supabase URL
+    SUPABASE_ANON_KEY: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt1b2ZreGtldWV5bGN3dm9jY3d1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU3Nzk4MTUsImV4cCI6MjA3MTM1NTgxNX0.dGaDw56rttHU9JPRGVLg34kQ_SQnR2bMnE2wfdWt7J0'          // Replace with your anon key
 };
 
 // API Helper Functions
@@ -26,14 +24,19 @@ window.api = {
             config.body = JSON.stringify(options.body);
         }
 
-        const response = await fetch(url, config);
-        const data = await response.json();
+        try {
+            const response = await fetch(url, config);
+            const data = await response.json();
 
-        if (!response.ok) {
-            throw new Error(data.error || 'API request failed');
+            if (!response.ok) {
+                throw new Error(data.error || 'API request failed');
+            }
+
+            return data;
+        } catch (error) {
+            console.error('API Request Error:', error);
+            throw error;
         }
-
-        return data;
     },
 
     // Authentication
@@ -49,6 +52,13 @@ window.api = {
         }
         
         return response;
+    },
+
+    async register(email, password, name, organization) {
+        return this.request('/auth/register', {
+            method: 'POST',
+            body: { email, password, name, organization }
+        });
     },
 
     // Quiz management
@@ -70,6 +80,13 @@ window.api = {
         });
     },
 
+    async deleteQuiz(id) {
+        return this.request(`/quizzes/${id}`, {
+            method: 'DELETE'
+        });
+    },
+
+    // Quiz participation
     async joinQuiz(code, participantData) {
         return this.request(`/quiz/${code}/join`, {
             method: 'POST',
@@ -77,6 +94,7 @@ window.api = {
         });
     },
 
+    // Export functionality
     async exportQuizData(quizId) {
         const token = localStorage.getItem('auth_token');
         const response = await fetch(`${window.CONFIG.API_URL}/quiz/${quizId}/export`, {
@@ -96,3 +114,9 @@ window.api = {
         document.body.removeChild(a);
     }
 };
+
+// Initialize API on page load
+document.addEventListener('DOMContentLoaded', () => {
+    console.log('🔗 QuizMaster API initialized');
+    console.log('Backend URL:', window.CONFIG.API_URL);
+});
