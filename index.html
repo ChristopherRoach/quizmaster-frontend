@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QuizMaster Complete - Live Quiz Platform</title>
+    <link rel="stylesheet" href="style.css">
+    <meta name="description" content="Complete quiz platform with admin-controlled live sessions and comprehensive analytics">
+</head>
+<body>
+    <!-- Landing Page -->
+    <div id="landing-page" class="view active">
+        <div class="hero-section">
+            <div class="container">
+                <div class="hero-content">
+                    <h1 class="hero-title">QuizMaster Complete</h1>
+                    <p class="hero-subtitle">Professional Live Quiz Platform with Real-time Control</p>
+                    <div class="hero-features">
+                        <div class="feature-card">
+                            <span class="feature-icon">🎮</span>
+                            <h3>Admin-Controlled Live Sessions</h3>
+                            <p>Complete control over question progression like Slido & Mentimeter</p>
+                        </div>
+                        <div class="feature-card">
+                            <span class="feature-icon">📊</span>
+                            <h3>Comprehensive Analytics</h3>
+                            <p>Detailed leaderboards with Excel export functionality</p>
+                        </div>
+                        <div class="feature-card">
+                            <span class="feature-icon">🎯</span>
+                            <h3>Multiple Question Types</h3>
+                            <p>Single/Multiple choice, True/False, Text input, Media support</p>
+                        </div>
+                    </div>
+                    <div class="hero-actions">
+                        <button class="btn btn--primary btn--lg" onclick="navigateTo('admin-login')">
+                            👨‍💼 Administrator Portal
+                        </button>
+                        <button class="btn btn--secondary btn--lg" onclick="navigateTo('participant-join')">
+                            🎓 Join Quiz Session
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Login -->
+    <div id="admin-login" class="view">
+        <div class="auth-container">
+            <div class="auth-card">
+                <div class="auth-header">
+                    <h2>🔐 Administrator Login</h2>
+                    <p>Access your quiz management dashboard</p>
+                </div>
+                <form id="admin-login-form" class="auth-form">
+                    <div class="form-group">
+                        <label class="form-label">Email Address</label>
+                        <input type="email" class="form-control" id="admin-email" 
+                               placeholder="admin@demo.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Password</label>
+                        <input type="password" class="form-control" id="admin-password" 
+                               placeholder="Enter password" required>
+                    </div>
+                    <button type="submit" class="btn btn--primary btn--full-width">
+                        Sign In
+                    </button>
+                </form>
+                <div class="demo-info">
+                    <p><strong>Demo Credentials:</strong></p>
+                    <p>Email: <code>admin@demo.com</code></p>
+                    <p>Password: <code>demo123</code></p>
+                </div>
+                <div class="auth-footer">
+                    <button class="btn btn--outline" onclick="navigateTo('landing-page')">
+                        ← Back to Home
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Dashboard -->
+    <div id="admin-dashboard" class="view">
+        <nav class="admin-nav">
+            <div class="nav-brand">
+                <h1>QuizMaster Complete</h1>
+                <span class="admin-badge">Administrator</span>
+            </div>
+            <div class="nav-menu">
+                <button class="nav-btn active" data-section="dashboard">📊 Dashboard</button>
+                <button class="nav-btn" data-section="quiz-library">📚 Quiz Library</button>
+                <button class="nav-btn" data-section="quiz-builder">🔧 Quiz Builder</button>
+                <button class="nav-btn" data-section="live-control">🎮 Live Control</button>
+                <button class="nav-btn" data-section="analytics">📈 Analytics</button>
+            </div>
+            <div class="nav-actions">
+                <span id="admin-name">Demo Admin</span>
+                <button class="btn btn--outline btn--sm" onclick="logout()">Logout</button>
+            </div>
+        </nav>
+
+        <div class="admin-content">
+            <!-- Dashboard Section -->
+            <section id="admin-dashboard-section" class="admin-section active">
+                <div class="container">
+                    <div class="section-header">
+                        <h2>Dashboard Overview</h2>
+                        <p>Monitor your quiz platform activities</p>
+                    </div>
+                    <div class="dashboard-grid">
+                        <div class="stats-card">
+                            <h3>📊 Total Quizzes</h3>
+                            <div class="stat-number" id="total-quizzes">0</div>
+                        </div>
+                        <div class="stats-card">
+                            <h3>👥 Total Participants</h3>
+                            <div class="stat-number" id="total-participants">0</div>
+                        </div>
+                        <div class="stats-card">
+                            <h3>🎯 Active Sessions</h3>
+                            <div class="stat-number" id="active-sessions">0</div>
+                        </div>
+                        <div class="stats-card">
+                            <h3>📈 Success Rate</h3>
+                            <div class="stat-number" id="success-rate">0%</div>
+                        </div>
+                    </div>
+                    <div class="recent-activity">
+                        <h3>Recent Activity</h3>
+                        <div id="activity-feed" class="activity-list">
+                            <!-- Activity items will be populated here -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Quiz Library Section -->
+            <section id="admin-quiz-library-section" class="admin-section">
+                <div class="container">
+                    <div class="section-header">
+                        <h2>Quiz Library</h2>
+                        <p>Manage your quiz collection</p>
+                    </div>
+                    <div class="library-controls">
+                        <div class="controls-left">
+                            <input type="text" class="form-control" id="quiz-search" placeholder="Search quizzes...">
+                            <select class="form-control" id="quiz-filter">
+                                <option value="all">All Quizzes</option>
+                                <option value="published">Published</option>
+                                <option value="draft">Drafts</option>
+                            </select>
+                        </div>
+                        <div class="controls-right">
+                            <button class="btn btn--primary" onclick="switchAdminSection('quiz-builder')">
+                                ➕ Create New Quiz
+                            </button>
+                        </div>
+                    </div>
+                    <div id="quiz-library-grid" class="quiz-grid">
+                        <!-- Quiz cards will be populated here -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- Quiz Builder Section -->
+            <section id="admin-quiz-builder-section" class="admin-section">
+                <div class="container">
+                    <div class="section-header">
+                        <h2>Quiz Builder</h2>
+                        <p>Create and edit quizzes with advanced features</p>
+                    </div>
+                    <div class="quiz-builder-layout">
+                        <div class="builder-sidebar">
+                            <div class="quiz-info-panel">
+                                <h3>Quiz Information</h3>
+                                <div class="form-group">
+                                    <label class="form-label">Quiz Title *</label>
+                                    <input type="text" class="form-control" id="quiz-title" 
+                                           placeholder="Enter quiz title" required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Description</label>
+                                    <textarea class="form-control" id="quiz-description" 
+                                              placeholder="Quiz description" rows="3"></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Category</label>
+                                    <select class="form-control" id="quiz-category">
+                                        <option value="general">General Knowledge</option>
+                                        <option value="science">Science</option>
+                                        <option value="mathematics">Mathematics</option>
+                                        <option value="history">History</option>
+                                        <option value="technology">Technology</option>
+                                        <option value="custom">Custom</option>
+                                    </select>
+                                </div>
+                                <div class="quiz-code-section">
+                                    <h4>Quiz Access Code</h4>
+                                    <div class="code-display">
+                                        <input type="text" class="form-control" id="quiz-code" 
+                                               placeholder="Enter custom code or auto-generate">
+                                        <button class="btn btn--outline btn--sm" onclick="generateQuizCode()">
+                                            🔄 Generate
+                                        </button>
+                                    </div>
+                                    <p class="help-text">Any length allowed (not limited to 6 characters)</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="builder-main">
+                            <div class="builder-toolbar">
+                                <h3>Questions (<span id="question-count">0</span>)</h3>
+                                <div class="question-type-selector">
+                                    <label class="form-label">Add Question Type:</label>
+                                    <select class="form-control" id="question-type-select">
+                                        <option value="">Select type...</option>
+                                        <option value="single_choice">Single Choice</option>
+                                        <option value="multiple_choice">Multiple Choice</option>
+                                        <option value="true_false">True/False</option>
+                                        <option value="text_input">Text Input</option>
+                                        <option value="instruction_slide">Instruction Slide</option>
+                                    </select>
+                                    <button class="btn btn--primary" onclick="addQuestion()">
+                                        ➕ Add Question
+                                    </button>
+                                </div>
+                            </div>
+                            <div id="questions-container" class="questions-list">
+                                <!-- Questions will be added here dynamically -->
+                            </div>
+                        </div>
+                    </div>
+                    <div class="builder-actions">
+                        <button class="btn btn--outline" onclick="saveDraft()">💾 Save Draft</button>
+                        <button class="btn btn--secondary" onclick="previewQuiz()">👁️ Preview</button>
+                        <button class="btn btn--success" onclick="publishQuiz()">🚀 Publish Quiz</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Live Control Section -->
+            <section id="admin-live-control-section" class="admin-section">
+                <div class="container">
+                    <div class="section-header">
+                        <h2>Live Quiz Control</h2>
+                        <p>Admin-controlled live quiz sessions</p>
+                    </div>
+                    <div class="live-control-layout">
+                        <div class="control-main">
+                            <div class="quiz-selector-panel">
+                                <h3>Select Quiz to Start</h3>
+                                <select class="form-control" id="live-quiz-selector">
+                                    <option value="">Choose a quiz...</option>
+                                </select>
+                                <div class="quiz-info" id="selected-quiz-info" style="display: none;">
+                                    <div class="quiz-code-display">
+                                        <strong>Quiz Code: <span id="live-quiz-code"></span></strong>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="current-question-display" id="current-question-display" style="display: none;">
+                                <div class="question-header">
+                                    <h4>Current Question</h4>
+                                    <div class="question-meta">
+                                        <span id="question-progress">Question 1 of 10</span>
+                                        <div class="timer-display">
+                                            <span id="question-timer">30</span>s
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="question-content" id="question-content">
+                                    <!-- Current question content -->
+                                </div>
+                            </div>
+                            
+                            <div class="control-buttons">
+                                <button class="btn btn--success btn--lg" id="start-session-btn" onclick="startLiveSession()">
+                                    ▶️ Start Session
+                                </button>
+                                <button class="btn btn--primary btn--lg" id="next-question-btn" onclick="nextQuestion()" disabled>
+                                    ⏭️ Next Question
+                                </button>
+                                <button class="btn btn--warning btn--lg" id="pause-session-btn" onclick="pauseSession()" disabled>
+                                    ⏸️ Pause
+                                </button>
+                                <button class="btn btn--error btn--lg" id="end-session-btn" onclick="endSession()" disabled>
+                                    ⏹️ End Session
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="control-sidebar">
+                            <div class="participants-panel">
+                                <h3>Participants (<span id="participant-count">0</span>)</h3>
+                                <div id="participants-list" class="participants-list">
+                                    <!-- Participant list -->
+                                </div>
+                            </div>
+                            
+                            <div class="live-leaderboard">
+                                <h3>Live Leaderboard</h3>
+                                <div id="live-leaderboard-list" class="leaderboard-list">
+                                    <!-- Live rankings -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Analytics Section -->
+            <section id="admin-analytics-section" class="admin-section">
+                <div class="container">
+                    <div class="section-header">
+                        <h2>Comprehensive Analytics</h2>
+                        <p>Detailed performance analysis and data export</p>
+                    </div>
+                    <div class="analytics-layout">
+                        <div class="quiz-selector-analytics">
+                            <select class="form-control" id="analytics-quiz-selector">
+                                <option value="">Select quiz for analysis...</option>
+                            </select>
+                        </div>
+                        
+                        <div id="analytics-content" class="analytics-content" style="display: none;">
+                            <div class="analytics-summary">
+                                <div class="summary-cards">
+                                    <div class="summary-card">
+                                        <h4>Total Participants</h4>
+                                        <div class="summary-number" id="analytics-participants">0</div>
+                                    </div>
+                                    <div class="summary-card">
+                                        <h4>Average Score</h4>
+                                        <div class="summary-number" id="analytics-avg-score">0%</div>
+                                    </div>
+                                    <div class="summary-card">
+                                        <h4>Completion Rate</h4>
+                                        <div class="summary-number" id="analytics-completion">0%</div>
+                                    </div>
+                                    <div class="summary-card">
+                                        <h4>Average Time</h4>
+                                        <div class="summary-number" id="analytics-avg-time">0s</div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="detailed-leaderboard">
+                                <div class="leaderboard-header">
+                                    <h3>Detailed Leaderboard</h3>
+                                    <button class="btn btn--success" onclick="exportToExcel()">
+                                        📊 Export to Excel
+                                    </button>
+                                </div>
+                                <div class="leaderboard-table-container">
+                                    <table class="leaderboard-table" id="detailed-leaderboard-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Rank</th>
+                                                <th>Participant</th>
+                                                <th>Correct Answers</th>
+                                                <th>Total Points</th>
+                                                <th>Avg Response Time</th>
+                                                <th>Completion %</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="leaderboard-tbody">
+                                            <!-- Leaderboard data -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            
+                            <div class="question-analysis">
+                                <h3>Question-by-Question Analysis</h3>
+                                <div id="question-analysis-content">
+                                    <!-- Question analysis -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <!-- Participant Join -->
+    <div id="participant-join" class="view">
+        <div class="participant-container">
+            <div class="join-card">
+                <div class="join-header">
+                    <h2>🎓 Join Quiz Session</h2>
+                    <p>Enter the quiz code to participate</p>
+                </div>
+                <form id="participant-join-form" class="join-form">
+                    <div class="form-group">
+                        <label class="form-label">Quiz Code</label>
+                        <input type="text" class="form-control" id="participant-quiz-code" 
+                               placeholder="Enter quiz code (any length)" required>
+                        <p class="help-text">Code length is flexible - not limited to 6 characters</p>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Your Name *</label>
+                        <input type="text" class="form-control" id="participant-name" 
+                               placeholder="Enter your full name" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Email (Optional)</label>
+                        <input type="email" class="form-control" id="participant-email" 
+                               placeholder="your.email@example.com">
+                    </div>
+                    <button type="submit" class="btn btn--primary btn--full-width btn--lg">
+                        🚀 Join Quiz
+                    </button>
+                </form>
+                <div class="join-footer">
+                    <button class="btn btn--outline" onclick="navigateTo('landing-page')">
+                        ← Back to Home
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Participant Waiting Room -->
+    <div id="participant-waiting" class="view">
+        <div class="waiting-container">
+            <div class="waiting-content">
+                <h2>🎯 Quiz Lobby</h2>
+                <div class="quiz-info-display">
+                    <h3 id="waiting-quiz-title">Quiz Title</h3>
+                    <p id="waiting-quiz-description">Quiz description will appear here</p>
+                    <div class="waiting-stats">
+                        <div class="stat-item">
+                            <span class="stat-label">Quiz Code</span>
+                            <span class="stat-value" id="waiting-quiz-code">CODE123</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Participants</span>
+                            <span class="stat-value" id="waiting-participant-count">1</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="waiting-message">
+                    <div class="loading-animation">⏳</div>
+                    <h4>Waiting for quiz to start...</h4>
+                    <p>The quiz administrator will begin the session shortly. Questions will appear automatically when the admin advances them.</p>
+                </div>
+                <div class="participant-list">
+                    <h4>Other Participants</h4>
+                    <div id="waiting-participants-list" class="participants-grid">
+                        <!-- Other participants will be listed here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Participant Quiz Session -->
+    <div id="participant-quiz" class="view">
+        <div class="quiz-container">
+            <div class="quiz-header">
+                <div class="quiz-progress">
+                    <span id="participant-question-progress">Question 1 of 10</span>
+                </div>
+                <div class="quiz-timer">
+                    <div class="timer-circle">
+                        <span id="participant-timer">30</span>
+                    </div>
+                </div>
+            </div>
+            <div class="quiz-content">
+                <div id="participant-question-content" class="question-display">
+                    <!-- Question content will be displayed here -->
+                </div>
+                <div id="participant-answer-area" class="answer-area">
+                    <!-- Answer options will be displayed here -->
+                </div>
+            </div>
+            <div class="quiz-actions">
+                <button class="btn btn--primary btn--lg" id="submit-answer-btn" onclick="submitAnswer()">
+                    ✓ Submit Answer
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Question Builder Modal -->
+    <div id="question-builder-modal" class="modal hidden">
+        <div class="modal-overlay"></div>
+        <div class="modal-content question-builder-content">
+            <div class="modal-header">
+                <h3 id="question-builder-title">Add Question</h3>
+                <button class="modal-close" onclick="closeModal('question-builder-modal')">×</button>
+            </div>
+            <div class="modal-body">
+                <form id="question-builder-form">
+                    <input type="hidden" id="question-edit-index" value="-1">
+                    <div class="form-group">
+                        <label class="form-label">Question Type</label>
+                        <select class="form-control" id="question-type" onchange="updateQuestionBuilder()">
+                            <option value="single_choice">Single Choice</option>
+                            <option value="multiple_choice">Multiple Choice</option>
+                            <option value="true_false">True/False</option>
+                            <option value="text_input">Text Input</option>
+                            <option value="instruction_slide">Instruction Slide</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Question Text / Instruction Content</label>
+                        <textarea class="form-control" id="question-text" rows="3" 
+                                  placeholder="Enter your question or instruction content"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Media (Optional)</label>
+                        <input type="file" class="form-control" id="question-media" 
+                               accept="image/*,video/*" onchange="handleMediaUpload()">
+                        <div id="media-preview" class="media-preview" style="display: none;"></div>
+                    </div>
+                    
+                    <div id="options-container" class="question-options">
+                        <!-- Options will be generated based on question type -->
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Time Limit (seconds)</label>
+                        <input type="number" class="form-control" id="question-timer" 
+                               value="30" min="5" max="300">
+                    </div>
+                    
+                    <div id="points-container" class="form-group">
+                        <label class="form-label">Points</label>
+                        <input type="number" class="form-control" id="question-points" 
+                               value="10" min="1" max="100">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn--outline" onclick="closeModal('question-builder-modal')">Cancel</button>
+                <button class="btn btn--primary" onclick="saveQuestion()">Save Question</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Participant Detail Modal -->
+    <div id="participant-detail-modal" class="modal hidden">
+        <div class="modal-overlay"></div>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Participant Details</h3>
+                <button class="modal-close" onclick="closeModal('participant-detail-modal')">×</button>
+            </div>
+            <div class="modal-body">
+                <div id="participant-detail-content">
+                    <!-- Participant details will be loaded here -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn--primary" onclick="closeModal('participant-detail-modal')">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Modal -->
+    <div id="loading-modal" class="modal hidden">
+        <div class="modal-overlay"></div>
+        <div class="modal-content">
+            <div class="loading-spinner"></div>
+            <p id="loading-message">Loading...</p>
+        </div>
+    </div>
+
+    <!-- Success/Error Messages -->
+    <div id="notification-container" class="notification-container">
+        <!-- Notifications will appear here -->
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
